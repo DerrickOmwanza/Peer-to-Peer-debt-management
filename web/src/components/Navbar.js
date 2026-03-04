@@ -15,8 +15,9 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">
-          💳 M-PESA Debt
+        <Link to="/" className="navbar-logo-container">
+          <img src="/logo.png" alt="P2P Debt Management" className="navbar-logo-img" />
+          <span className="navbar-logo-text">M-PESA Debt</span>
         </Link>
         <ul className="nav-menu">
           <li>
