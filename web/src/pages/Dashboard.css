@@ -1,0 +1,124 @@
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.dashboard h1 {
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 28px;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 20px;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 10px;
+}
+
+.profile-info p {
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #555;
+}
+
+.wallet-balance {
+  background-color: #f0f4ff;
+  padding: 12px;
+  border-radius: 4px;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.loans-list,
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.loan-item {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.loan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.loan-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status.active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.completed {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.loan-item p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.notification-item {
+  background-color: #f9f9f9;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid #28a745;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.notif-type {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  background-color: #667eea;
+  color: white;
+}
+
+.notification-item p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}

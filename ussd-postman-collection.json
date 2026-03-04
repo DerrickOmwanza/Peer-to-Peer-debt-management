@@ -1,0 +1,435 @@
+{
+  "info": {
+    "name": "M-PESA USSD API Testing",
+    "description": "Complete USSD API endpoint tests for the M-PESA debt allocation system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. USSD Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/ussd/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "ussd", "health"]
+        }
+      }
+    },
+    {
+      "name": "2. Clear All Sessions",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5000/api/ussd/sessions/clear",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "ussd", "sessions", "clear"]
+        }
+      }
+    },
+    {
+      "name": "3. Check Active Sessions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/ussd/sessions",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "ussd", "sessions"]
+        }
+      }
+    },
+    {
+      "name": "USSD Test - Request Loan Flow",
+      "item": [
+        {
+          "name": "Step 1 - Show Main Menu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-001\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        },
+        {
+          "name": "Step 2 - Select Request Loan (Option 1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-001\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        },
+        {
+          "name": "Step 3 - Enter Lender Phone",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-001\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"254702345678\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        },
+        {
+          "name": "Step 4 - Enter Loan Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-001\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"5000\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        },
+        {
+          "name": "Step 5 - Enter Repayment Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-001\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"500\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        },
+        {
+          "name": "Step 6 - Confirm Loan (Option 1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-001\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "USSD Test - View Loans Flow",
+      "item": [
+        {
+          "name": "Step 1 - Show Main Menu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-002\",\n  \"phoneNumber\": \"254702345678\",\n  \"text\": \"\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        },
+        {
+          "name": "Step 2 - Select View My Loans (Option 2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"test-session-002\",\n  \"phoneNumber\": \"254702345678\",\n  \"text\": \"2\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/test",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "USSD Test - Check Balance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionId\": \"test-session-003\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"4\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/ussd/test",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "ussd", "test"]
+        }
+      }
+    },
+    {
+      "name": "USSD Test - Check Transactions",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionId\": \"test-session-004\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"5\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/ussd/test",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "ussd", "test"]
+        }
+      }
+    },
+    {
+      "name": "USSD Test - Invalid Input",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionId\": \"test-session-005\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"9\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/ussd/test",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "ussd", "test"]
+        }
+      }
+    },
+    {
+      "name": "USSD Test - Invalid Phone Number",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sessionId\": \"test-session-006\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/ussd/test",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "ussd", "test"]
+        }
+      }
+    },
+    {
+      "name": "Sync Operations",
+      "item": [
+        {
+          "name": "Check Sync Queue Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/queue/254701234567",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "queue", "254701234567"]
+            }
+          }
+        },
+        {
+          "name": "Sync Offline Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"254701234567\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/sync",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "sync"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Safaricom Handler (Production)",
+      "item": [
+        {
+          "name": "Safaricom Main Menu Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"safaricom-sess-123\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"\",\n  \"serviceCode\": \"*383\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/handler",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "handler"]
+            }
+          }
+        },
+        {
+          "name": "Safaricom Request Loan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"safaricom-sess-123\",\n  \"phoneNumber\": \"254701234567\",\n  \"text\": \"1\",\n  \"serviceCode\": \"*383\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/ussd/handler",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "ussd", "handler"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

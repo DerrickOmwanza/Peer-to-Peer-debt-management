@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/riskScoreTitle"
+        style="@style/TextHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/risk_score"
+        android:textSize="22sp" />
+
+    <ProgressBar
+        android:id="@+id/riskScoreProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="250dp"
+        android:layout_height="20dp"
+        android:max="100" />
+
+    <TextView
+        android:id="@+id/riskScoreValue"
+        style="@style/TextSubheading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Score: --"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/riskScoreBand"
+        style="@style/TextSubheading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Risk Band: --" />
+
+    <TextView
+        android:id="@+id/riskScoreReasoning"
+        style="@style/TextBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Reasoning will appear here..." />
+</LinearLayout>

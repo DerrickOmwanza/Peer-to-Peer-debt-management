@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base App Theme -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primaryGreen</item>
+        <item name="colorPrimaryVariant">@color/primaryDarkGreen</item>
+        <item name="colorSecondary">@color/secondaryBlue</item>
+        <item name="colorSecondaryVariant">@color/accentOrange</item>
+        <item name="android:colorBackground">@color/backgroundWhite</item>
+        <item name="android:textColorPrimary">@color/neutralGray</item>
+        <item name="android:textColorSecondary">@color/lightGray</item>
+        <item name="android:buttonStyle">@style/Widget.App.Button</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+    </style>
+
+    <!-- Button Style -->
+    <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/backgroundWhite</item>
+        <item name="backgroundTint">@color/primaryGreen</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Text Styles -->
+    <style name="TextHeading" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/primaryDarkGreen</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextSubheading" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textColor">@color/secondaryBlue</item>
+    </style>
+
+    <style name="TextBody" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/neutralGray</item>
+    </style>
+</resources>

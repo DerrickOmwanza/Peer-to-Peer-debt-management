@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primaryGreen">#2BB673</color>
+    <color name="primaryDarkGreen">#1E6F4E</color>
+
+    <!-- Secondary Colors -->
+    <color name="secondaryBlue">#1E88E5</color>
+    <color name="accentOrange">#F57C00</color>
+
+    <!-- Neutral Colors -->
+    <color name="neutralGray">#424242</color>
+    <color name="lightGray">#F5F5F5</color>
+    <color name="backgroundWhite">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="successGreen">#4CAF50</color>
+    <color name="errorRed">#D32F2F</color>
+    <color name="warningOrange">#FF9800</color>
+
+    <!-- Material Colors -->
+    <color name="black">#000000</color>
+</resources>

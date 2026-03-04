@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Peer-to-Peer Debt Management</string>
+    <string name="splash_title">Peer-to-Peer Debt Management</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="create_loan">Create Loan</string>
+    <string name="view_risk_score">View Risk Score</string>
+    <string name="file_dispute">File Dispute</string>
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="risk_score">Risk Score</string>
+    <string name="submit_dispute">Submit Dispute</string>
+    <string name="dispute_reason_hint">Enter dispute reason</string>
+    <string name="evidence_hint">Enter evidence</string>
+</resources>
