@@ -166,6 +166,86 @@
   color: #721c24;
 }
 
+/* Pending loan card styling */
+.loan-card-pending {
+  border: 2px solid #f0c040;
+  background-color: #fffdf5;
+}
+
+.pending-banner {
+  background-color: #fff3cd;
+  color: #856404;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 10px 0 4px 0;
+}
+
+.section-title {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pending-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.pending-actions .btn-approve {
+  flex: 1;
+}
+
+.btn-decline {
+  flex: 1;
+  padding: 10px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
+}
+
+.btn-decline:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.btn-decline:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-approve {
+  width: 100%;
+  padding: 10px 16px;
+  margin-top: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
+}
+
+.btn-approve:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.btn-approve:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .no-data {
   grid-column: 1 / -1;
   text-align: center;
@@ -203,5 +283,153 @@
 
   .tabs {
     flex-direction: column;
+  }
+}
+
+/* Agreement Modal Styles */
+.btn-view-agreement {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #f0f2f5;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-view-agreement:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.agreement-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.agreement-modal {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.agreement-modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.agreement-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #111827;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #9ca3af;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: #4b5563;
+}
+
+.agreement-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex-grow: 1;
+  background-color: #f9fafb;
+}
+
+.agreement-pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+  background: white;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.agreement-modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-close-modal {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-print {
+  padding: 8px 16px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-print:hover {
+  background-color: #5a6fd6;
+}
+
+@media print {
+  .navbar, .btn-close-modal, .btn-print, .close-btn, .agreement-modal-header h2 {
+    display: none !important;
+  }
+  .agreement-modal-overlay {
+    position: relative;
+    background: none;
+    padding: 0;
+  }
+  .agreement-modal {
+    box-shadow: none;
+    max-height: none;
+  }
+  .agreement-modal-body {
+    padding: 0;
+  }
+  .agreement-pre {
+    border: none;
   }
 }

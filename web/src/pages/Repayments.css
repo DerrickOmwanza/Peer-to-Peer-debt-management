@@ -205,8 +205,26 @@
 }
 
 @media (max-width: 768px) {
+  .repayments-container {
+    padding: 20px 15px 40px;
+  }
+
+  .repayments-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
   .summary-card {
     grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .repay-amount .amount {
+    font-size: 24px;
   }
 
   .repay-details {

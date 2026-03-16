@@ -1,20 +1,38 @@
+/* ============================================
+   SHARED PAGE STYLES
+   ============================================ */
+
 .page-container {
   max-width: 600px;
   margin: 40px auto;
   padding: 0 20px;
 }
 
+/* ============================================
+   FORM CARD
+   ============================================ */
+
 .form-card {
   background: white;
-  border-radius: 8px;
-  padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 36px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .form-card h1 {
-  margin-bottom: 25px;
-  color: #333;
+  margin-bottom: 8px;
+  color: #1a1a2e;
   font-size: 24px;
+  font-weight: 700;
+}
+
+.form-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 28px;
+  line-height: 1.5;
 }
 
 .form-group {
@@ -23,66 +41,522 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #555;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #374151;
   font-size: 14px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 11px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
   font-size: 14px;
-  transition: border-color 0.3s;
+  color: #1f2937;
+  background: #fafafa;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  background: #fff;
 }
 
-.form-card button {
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.form-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 28px 0;
+}
+
+.form-card button[type='submit'] {
   width: 100%;
-  padding: 12px;
-  background-color: #667eea;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea, #5a67d8);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 10px;
+  transition: transform 0.15s, box-shadow 0.2s;
+  margin-top: 12px;
 }
 
-.form-card button:hover:not(:disabled) {
-  background-color: #5568d3;
+.form-card button[type='submit']:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
 }
 
-.form-card button:disabled {
-  background-color: #ccc;
+.form-card button[type='submit']:disabled {
+  background: #cbd5e0;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
+
+/* ============================================
+   ALERTS
+   ============================================ */
 
 .error {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 12px;
-  border-radius: 4px;
+  background-color: #fef2f2;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  border: 1px solid #f5c6cb;
+  border: 1px solid #fecaca;
+  font-size: 14px;
 }
 
 .success {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 12px;
-  border-radius: 4px;
+  background-color: #f0fdf4;
+  color: #166534;
+  padding: 12px 16px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  border: 1px solid #c3e6cb;
+  border: 1px solid #bbf7d0;
+  font-size: 14px;
+}
+
+/* ============================================
+   LOAN REQUEST PAGE — TWO-STEP FLOW
+   ============================================ */
+
+.loan-request-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+
+/* Top Bar */
+.loan-top-bar {
+  margin-bottom: 20px;
+}
+
+.back-dashboard-btn {
+  background: none;
+  border: 1.5px solid #d1d5db;
+  color: #374151;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-dashboard-btn:hover {
+  background: #f3f4f6;
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* Step Indicator */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+  gap: 0;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.45;
+  transition: opacity 0.3s;
+}
+
+.step-item.active {
+  opacity: 1;
+}
+
+.step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #cbd5e0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  transition: background 0.3s;
+}
+
+.step-item.active .step-number {
+  background: linear-gradient(135deg, #667eea, #5a67d8);
+}
+
+.step-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: #d1d5db;
+  margin: 0 16px;
+}
+
+/* ============================================
+   STEP 1: TERMS & CONDITIONS
+   ============================================ */
+
+.terms-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.terms-header {
+  padding: 32px 36px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.terms-header h1 {
+  font-size: 22px;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.terms-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Scrollable T&C Body */
+.terms-scroll-container {
+  max-height: 480px;
+  overflow-y: auto;
+  border-bottom: 1px solid #e5e7eb;
+  position: relative;
+}
+
+.terms-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terms-scroll-container::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.terms-scroll-container::-webkit-scrollbar-thumb {
+  background: #a0aec0;
+  border-radius: 4px;
+}
+
+.terms-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #667eea;
+}
+
+.terms-content {
+  padding: 28px 36px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #374151;
+}
+
+.terms-content h2 {
+  font-size: 18px;
+  text-align: center;
+  color: #1a1a2e;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.terms-content h3 {
+  font-size: 15px;
+  color: #1e3a5f;
+  margin-top: 28px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #edf2f7;
+  font-weight: 700;
+}
+
+.terms-content p {
+  margin-bottom: 10px;
+}
+
+.terms-preamble {
+  font-style: italic;
+  color: #4b5563;
+  border-left: 3px solid #667eea;
+  padding-left: 16px;
+  margin-bottom: 24px;
+}
+
+.terms-content ul,
+.terms-content ol {
+  padding-left: 24px;
+  margin-bottom: 12px;
+}
+
+.terms-content li {
+  margin-bottom: 8px;
+}
+
+/* Acceptance Section */
+.terms-acceptance {
+  padding: 28px 36px 32px;
+  background: #f8fafc;
+}
+
+.terms-timestamp {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.terms-timestamp span {
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.terms-signature {
+  margin-bottom: 20px;
+}
+
+.terms-signature label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.terms-signature input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'Georgia', serif;
+  color: #1e3a5f;
+  background: white;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.terms-signature input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.terms-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #374151;
+  padding: 14px 16px;
+  background: white;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.terms-checkbox-label:has(input:checked) {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.terms-checkbox-label input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #667eea;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.terms-continue-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea, #5a67d8);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.terms-continue-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+}
+
+.terms-continue-btn:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============================================
+   STEP 2: EXTRAS
+   ============================================ */
+
+.back-step-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.back-step-btn:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
+/* Interest Summary Box */
+.interest-summary {
+  background: #f0f4ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.interest-summary h4 {
+  font-size: 14px;
+  color: #4338ca;
+  margin: 0 0 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.interest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #374151;
+}
+
+.interest-row span {
+  color: #6b7280;
+}
+
+.interest-row strong {
+  color: #1e3a5f;
+}
+
+.interest-row.total {
+  border-top: 1.5px solid #c7d2fe;
+  margin-top: 8px;
+  padding-top: 12px;
+  font-size: 15px;
+}
+
+.interest-row.total strong {
+  color: #4338ca;
+  font-size: 16px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .loan-request-page {
+    padding: 16px 14px 40px;
+  }
+
+  .terms-header,
+  .terms-content,
+  .terms-acceptance {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .terms-scroll-container {
+    max-height: 360px;
+  }
+
+  .step-label {
+    font-size: 12px;
+  }
+
+  .step-line {
+    width: 36px;
+    margin: 0 8px;
+  }
+
+  .step-number {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .form-card {
+    padding: 24px 20px;
+  }
+
+  .interest-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .terms-header h1 {
+    font-size: 18px;
+  }
+
+  .terms-content h2 {
+    font-size: 15px;
+  }
+
+  .terms-content h3 {
+    font-size: 14px;
+  }
+
+  .terms-content {
+    font-size: 13px;
+  }
+
+  .step-item {
+    gap: 6px;
+  }
 }

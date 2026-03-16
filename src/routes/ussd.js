@@ -61,12 +61,15 @@ router.post('/handler', async (req, res) => {
       // For USSD, we auto-create basic user account
       const db = require('../config/database');
       const userResult = await db.query(`
-        INSERT INTO users (phone, name, email, wallet_balance)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, phone, name, email, wallet_balance
-      `, [validatedPhone, `User ${validatedPhone.slice(-4)}`, null, 0]);
+        INSERT INTO users (id, phone_number, full_name, email, password_hash, wallet_balance)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id, phone_number, full_name, email, wallet_balance
+      `, [uuidv4(), validatedPhone, `User ${validatedPhone.slice(-4)}`, `${validatedPhone}@ussd.p2p`, 'ussd-no-password', 0]);
       
       user = userResult.rows[0];
+      // Normalize user object for ussdLogic
+      user.phone = user.phone_number;
+      user.name = user.full_name;
     }
 
     // Process the input

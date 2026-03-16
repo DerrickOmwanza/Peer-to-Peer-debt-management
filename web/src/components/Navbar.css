@@ -47,6 +47,11 @@
   list-style: none;
   gap: 30px;
   flex: 1;
+  align-items: center;
+}
+
+.nav-menu > li {
+  position: relative;
 }
 
 .nav-menu a {
@@ -54,16 +59,139 @@
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
+  display: block;
+  padding: 8px 0;
 }
 
 .nav-menu a:hover {
   color: #f0f0f0;
 }
 
+/* Dropdown Styles */
+.nav-dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.dropdown-toggle:hover {
+  color: #f0f0f0;
+}
+
+.dropdown-arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #5568d3;
+  list-style: none;
+  padding: 10px 0;
+  border-radius: 4px;
+  min-width: 160px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-top: 8px;
+  z-index: 1000;
+}
+
+.dropdown-menu li {
+  margin: 0;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu a:hover {
+  background-color: #4558c2;
+  color: #ffffff;
+}
+
 .nav-user {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.desktop-only {
+  display: flex;
+}
+
+.mobile-user-info {
+  display: none;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.hamburger {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background: white;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 2px;
+  background: white;
+  left: 0;
+  transition: transform 0.3s;
+}
+
+.hamburger::before {
+  top: -8px;
+}
+
+.hamburger::after {
+  bottom: -8px;
+}
+
+.hamburger.open {
+  background: transparent;
+}
+
+.hamburger.open::before {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.open::after {
+  transform: translateY(-8px) rotate(-45deg);
 }
 
 .user-name {
@@ -88,34 +216,92 @@
 
 @media (max-width: 768px) {
   .navbar-container {
+    flex-direction: row;
+    justify-content: space-between;
+    height: 60px;
+    padding: 0 20px;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+    z-index: 1001;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 60px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background-color: #667eea;
     flex-direction: column;
-    height: auto;
-    padding: 10px 20px;
+    gap: 0;
+    transition: left 0.3s;
+    padding: 20px;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .nav-menu.active {
+    left: 0;
+  }
+
+  .nav-menu > li {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-menu a, .dropdown-toggle {
+    padding: 15px 10px;
+    width: 100%;
+    font-size: 18px;
+  }
+
+  .dropdown-menu {
+    position: static;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+    margin-top: 0;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .dropdown-menu a {
+    padding-left: 30px;
+    font-size: 16px;
+  }
+
+  .mobile-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px 10px;
+    margin-top: auto;
+  }
+
+  .mobile-user-info .user-name {
+    font-size: 16px;
+  }
+
+  .mobile-user-info .logout-btn {
+    width: 100%;
+    text-align: center;
   }
 
   .navbar-logo-container {
-    margin-right: 0;
-    margin-bottom: 10px;
+    margin-bottom: 0;
   }
 
   .navbar-logo-img {
-    height: 40px;
-    width: 40px;
+    height: 35px;
+    width: 35px;
   }
 
   .navbar-logo-text {
     font-size: 18px;
-  }
-
-  .nav-menu {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .nav-user {
-    width: 100%;
-    justify-content: space-between;
   }
 }

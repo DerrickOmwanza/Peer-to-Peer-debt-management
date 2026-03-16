@@ -11,6 +11,27 @@ const { verifyToken } = require('../middleware/auth');
 const { analyzeDispute } = require('../services/novaService');
 
 /**
+ * GET /api/disputes
+ * Get all disputes for the current user
+ */
+router.get('/', verifyToken, async (req, res) => {
+  try {
+    const query = await pool.query(
+      `SELECT d.*, l.principal_amount
+       FROM disputes d
+       JOIN loans l ON d.loan_id = l.id
+       WHERE d.borrower_id = $1 OR d.lender_id = $1
+       ORDER BY d.created_at DESC`,
+      [req.user.id]
+    );
+    res.json(query.rows);
+  } catch (err) {
+    console.error('[Disputes List Error]:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
  * POST /api/disputes/create
  * File a new dispute for a loan
  * 

@@ -4,6 +4,11 @@ const { v4: uuidv4 } = require('uuid');
 const pool = require('../config/database');
 const { verifyToken } = require('../middleware/auth');
 const { getRiskScore } = require('../services/novaService');
+const { sendAgreementEmail } = require('../services/emailService');
+
+const CBK_BASE_RATE = 10.75;
+const RISK_PREMIUM = 3.0;
+const ANNUAL_INTEREST_RATE = CBK_BASE_RATE + RISK_PREMIUM;
 
 // Normalize phone number format
 function normalizePhoneNumber(phone) {
@@ -32,7 +37,10 @@ router.post('/request', verifyToken, async (req, res) => {
       principal_amount,
       repayment_method,
       repayment_amount,
-      repayment_start_date
+      repayment_start_date,
+      terms_accepted,
+      terms_accepted_at,
+      lender_name
     } = req.body;
     
     // Validate input
@@ -40,12 +48,51 @@ router.post('/request', verifyToken, async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     
+    // Validate Terms & Conditions acceptance
+    if (terms_accepted !== true) {
+      return res.status(400).json({ error: 'You must accept the Terms & Conditions before requesting a loan' });
+    }
+    
+    // Get borrower name and email and metrics
+    const borrowerData = await pool.query(
+      `SELECT full_name, email, 
+        (SELECT COUNT(*) FROM loans WHERE borrower_id = $1) as total_loans,
+        (SELECT COALESCE(SUM(CASE WHEN status = 'defaulted' THEN 1 ELSE 0 END)::float / NULLIF(COUNT(*), 0) * 100, 0) FROM loans WHERE borrower_id = $1) as default_rate,
+        (SELECT COALESCE(AVG(EXTRACT(DAY FROM repayment_start_date - created_at)), 30) FROM loans WHERE borrower_id = $1) as avg_repayment_days,
+        (SELECT COALESCE(COUNT(DISTINCT DATE_TRUNC('quarter', created_at)), 0) FROM loans WHERE borrower_id = $1) as loan_frequency,
+        (SELECT COUNT(*) FROM disputes WHERE borrower_id = $1) as dispute_count
+       FROM users WHERE id = $1`,
+      [req.user.id]
+    );
+
+    if (borrowerData.rows.length === 0) {
+      return res.status(404).json({ error: 'Borrower not found' });
+    }
+
+    const borrower = borrowerData.rows[0];
+    const borrowerName = borrower.full_name || 'Unknown';
+    const borrowerEmail = borrower.email;
+
+    // Get Nova Risk Score for borrower
+    console.log(`[Loans] Fetching risk score for ${borrowerName}...`);
+    const riskScoreResult = await getRiskScore(req.user.id, {
+      totalLoans: parseInt(borrower.total_loans),
+      defaultRate: parseFloat(borrower.default_rate),
+      avgRepaymentDays: parseFloat(borrower.avg_repayment_days),
+      loanFrequency: parseInt(borrower.loan_frequency),
+      disputeCount: parseInt(borrower.dispute_count)
+    });
+
+    const riskScoreMsg = riskScoreResult.success 
+      ? `Risk Score: ${riskScoreResult.riskScore} (${riskScoreResult.riskBand})`
+      : 'Risk Score: Unable to calculate (Medium default)';
+
     // Normalize phone number (remove +, leading 0)
     const normalizedPhone = normalizePhoneNumber(lender_phone);
     
     // Get lender by phone
     const lender = await pool.query(
-      'SELECT id FROM users WHERE phone_number = $1',
+      'SELECT id, full_name, email FROM users WHERE phone_number = $1',
       [normalizedPhone]
     );
     
@@ -53,24 +100,100 @@ router.post('/request', verifyToken, async (req, res) => {
       return res.status(404).json({ error: 'Lender not found' });
     }
     
+    const resolvedLenderName = lender_name || lender.rows[0].full_name || 'Unknown';
+    const lenderEmail = lender.rows[0].email;
+    
+    // Calculate repayment amount based on CBK rules if interest-based
+    let finalRepaymentAmount = parseFloat(repayment_amount);
+    if (repayment_method === 'interest') {
+      const principal = parseFloat(principal_amount);
+      const interest = (principal * ANNUAL_INTEREST_RATE) / 100;
+      finalRepaymentAmount = principal + interest;
+    }
+    
+    const loanId = uuidv4();
+    const acceptedAt = terms_accepted_at || new Date().toISOString();
+    
     // Create loan
     const loan = await pool.query(
-      `INSERT INTO loans (id, borrower_id, lender_id, principal_amount, remaining_balance, repayment_method, repayment_amount, repayment_start_date, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-       RETURNING id, borrower_id, lender_id, principal_amount, remaining_balance, repayment_method, repayment_amount, repayment_start_date, status, created_at`,
-      [uuidv4(), req.user.id, lender.rows[0].id, principal_amount, principal_amount, repayment_method, repayment_amount, repayment_start_date, 'pending']
+      `INSERT INTO loans (id, borrower_id, lender_id, principal_amount, remaining_balance, repayment_method, repayment_amount, repayment_start_date, status, terms_accepted, terms_accepted_at, lender_name)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       RETURNING id, borrower_id, lender_id, principal_amount, remaining_balance, repayment_method, repayment_amount, repayment_start_date, status, created_at, terms_accepted, terms_accepted_at, lender_name`,
+      [loanId, req.user.id, lender.rows[0].id, principal_amount, principal_amount, repayment_method, finalRepaymentAmount, repayment_start_date, 'pending', true, acceptedAt, resolvedLenderName]
     );
     
-    // Create notification for lender
+    // Generate loan agreement
+    const agreementId = uuidv4();
+    const agreementDate = new Date().toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' });
+    const agreementText = `LOAN AGREEMENT
+
+Agreement Reference: ${agreementId}
+Date: ${agreementDate}
+
+PARTIES:
+- Borrower: ${borrowerName} (${borrowerEmail})
+- Lender: ${resolvedLenderName} (${lenderEmail})
+
+LOAN DETAILS:
+- Principal Amount: Ksh ${principal_amount}
+- Repayment Method: ${repayment_method}
+- Repayment Amount: Ksh ${finalRepaymentAmount.toFixed(2)}
+- Repayment Start Date: ${repayment_start_date}
+- Interest Rate applied: ${repayment_method === 'interest' ? ANNUAL_INTEREST_RATE + '%' : 'Fixed'} (CBK base rate + risk premium)
+
+TERMS AND CONDITIONS (LEGAL):
+1. The Borrower agrees to repay the total loan amount as specified above.
+2. Repayments shall commence on the agreed start date and follow the ${repayment_method} schedule.
+3. Each repayment installment shall be Ksh ${finalRepaymentAmount.toFixed(2)}.
+4. Failure to make timely repayments may result in the loan being marked as defaulted.
+5. In case of default, the Borrower agrees to legal enforcement through the Kenyan courts of law.
+6. The Borrower acknowledges that late payment or default will negatively impact their Nova Risk Score.
+7. Both parties agree to resolve any disputes through the platform's AI-mediated dispute resolution mechanism before escalating to human arbitration or legal action.
+8. This agreement is binding upon acceptance by both parties through the platform.
+
+ACCEPTANCE:
+- Borrower (${borrowerName}) accepted Terms & Conditions and digitally signed on ${acceptedAt}.
+- Lender acceptance is pending approval of the loan request.`;
+
+    await pool.query(
+      `INSERT INTO loan_agreements (id, loan_id, agreement_text, signatures)
+       VALUES ($1, $2, $3, $4)`,
+      [agreementId, loanId, agreementText, JSON.stringify({ borrower: borrowerName, signedAt: acceptedAt })]
+    );
+    
+    // Update loan with agreement reference
+    await pool.query(
+      'UPDATE loans SET agreement_id = $1 WHERE id = $2',
+      [agreementId, loanId]
+    );
+    
+    // Create notification for lender with richer summary and risk score
+    const notificationMessage = `New loan request: Ksh ${principal_amount} from ${borrowerName}. ${riskScoreMsg}. Repayment: Ksh ${finalRepaymentAmount.toFixed(2)} starting ${repayment_start_date}.`;
     await pool.query(
       `INSERT INTO notifications (id, user_id, loan_id, notification_type, message)
        VALUES ($1, $2, $3, $4, $5)`,
-      [uuidv4(), lender.rows[0].id, loan.rows[0].id, 'loan_request', `New loan request: Ksh ${principal_amount} from borrower`]
+      [uuidv4(), lender.rows[0].id, loanId, 'loan_request', notificationMessage]
     );
     
+    // Send email "soft copy" to lender and borrower
+    console.log(`[Loans] Sending agreement emails for loan ${loanId}...`);
+    const emailData = {
+      borrowerName,
+      lenderName: resolvedLenderName,
+      amount: principal_amount,
+      repaymentAmount: finalRepaymentAmount.toFixed(2),
+      repaymentDate: repayment_start_date
+    };
+
+    // Attempt to send emails (background)
+    sendAgreementEmail(lenderEmail, emailData, agreementText).catch(e => console.error('[Email Error]:', e));
+    sendAgreementEmail(borrowerEmail, emailData, agreementText).catch(e => console.error('[Email Error]:', e));
+
     res.status(201).json({
-      message: 'Loan request created successfully',
-      loan: loan.rows[0]
+      message: 'Loan request created successfully and agreement sent via email',
+      loan: loan.rows[0],
+      agreement_id: agreementId,
+      riskScore: riskScoreResult
     });
   } catch (err) {
     console.error(err);
@@ -89,7 +212,7 @@ router.patch('/:loanId/approval', verifyToken, async (req, res) => {
     }
     
     const loan = await pool.query(
-      'SELECT borrower_id, lender_id FROM loans WHERE id = $1',
+      'SELECT borrower_id, lender_id, principal_amount FROM loans WHERE id = $1',
       [loanId]
     );
     
@@ -102,6 +225,47 @@ router.patch('/:loanId/approval', verifyToken, async (req, res) => {
     }
     
     const newStatus = approved ? 'active' : 'declined';
+    const { borrower_id, lender_id, principal_amount } = loan.rows[0];
+    
+    // If approved, transfer funds from lender to borrower
+    if (approved) {
+      // Check lender has sufficient balance
+      const lenderBalance = await pool.query(
+        'SELECT wallet_balance FROM users WHERE id = $1',
+        [lender_id]
+      );
+      
+      if (lenderBalance.rows.length === 0 || parseFloat(lenderBalance.rows[0].wallet_balance) < parseFloat(principal_amount)) {
+        return res.status(400).json({ error: 'Insufficient funds in lender wallet' });
+      }
+      
+      // Deduct from lender wallet
+      await pool.query(
+        'UPDATE users SET wallet_balance = wallet_balance - $1 WHERE id = $2',
+        [principal_amount, lender_id]
+      );
+      
+      // Add to borrower wallet
+      await pool.query(
+        'UPDATE users SET wallet_balance = wallet_balance + $1 WHERE id = $2',
+        [principal_amount, borrower_id]
+      );
+      
+      // Log lender transaction (outgoing)
+      await pool.query(
+        `INSERT INTO transactions (id, user_id, amount, transaction_type, description, created_at)
+         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
+        [uuidv4(), lender_id, principal_amount, 'outgoing', `Loan disbursement to borrower for loan ${loanId}`]
+      );
+      
+      // Log borrower transaction (incoming)
+      await pool.query(
+        `INSERT INTO transactions (id, user_id, amount, transaction_type, description, created_at)
+         VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
+        [uuidv4(), borrower_id, principal_amount, 'incoming', `Loan received from lender for loan ${loanId}`]
+      );
+    }
+    
     const updatedLoan = await pool.query(
       `UPDATE loans SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *`,
       [newStatus, loanId]
@@ -111,7 +275,7 @@ router.patch('/:loanId/approval', verifyToken, async (req, res) => {
     await pool.query(
       `INSERT INTO notifications (id, user_id, loan_id, notification_type, message)
        VALUES ($1, $2, $3, $4, $5)`,
-      [uuidv4(), loan.rows[0].borrower_id, loanId, 'approval', `Loan ${newStatus}`]
+      [uuidv4(), borrower_id, loanId, 'approval', `Loan ${newStatus}`]
     );
     
     res.json({
@@ -304,6 +468,41 @@ router.get('/admin/stats', verifyToken, async (req, res) => {
     });
   } catch (err) {
     console.error('[Stats Error]:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get loan agreement
+router.get('/:loanId/agreement', verifyToken, async (req, res) => {
+  try {
+    const { loanId } = req.params;
+
+    // Verify user is borrower or lender of this loan
+    const loan = await pool.query(
+      'SELECT borrower_id, lender_id FROM loans WHERE id = $1',
+      [loanId]
+    );
+
+    if (loan.rows.length === 0) {
+      return res.status(404).json({ error: 'Loan not found' });
+    }
+
+    if (loan.rows[0].borrower_id !== req.user.id && loan.rows[0].lender_id !== req.user.id) {
+      return res.status(403).json({ error: 'You are not authorized to view this agreement' });
+    }
+
+    const agreement = await pool.query(
+      'SELECT id, loan_id, agreement_text, clauses, signatures, is_valid, created_at, updated_at FROM loan_agreements WHERE loan_id = $1',
+      [loanId]
+    );
+
+    if (agreement.rows.length === 0) {
+      return res.status(404).json({ error: 'Agreement not found for this loan' });
+    }
+
+    res.json(agreement.rows[0]);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });

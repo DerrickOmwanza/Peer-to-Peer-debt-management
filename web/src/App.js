@@ -10,6 +10,9 @@ import MyLoans from './pages/MyLoans';
 import Transactions from './pages/Transactions';
 import Repayments from './pages/Repayments';
 import Wallet from './pages/Wallet';
+import RiskScore from './pages/RiskScore';
+import Disputes from './pages/Disputes';
+import AdminDashboard from './components/AdminDashboard';
 import './App.css';
 
 function App() {
@@ -64,6 +67,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Wallet />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/risk-score"
+            element={
+              <ProtectedRoute>
+                <RiskScore />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/disputes"
+            element={
+              <ProtectedRoute>
+                <Disputes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
               </ProtectedRoute>
             }
           />

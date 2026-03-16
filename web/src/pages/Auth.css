@@ -87,6 +87,34 @@
   text-decoration: underline;
 }
 
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 20px;
+    background: #667eea;
+  }
+
+  .auth-card {
+    padding: 24px 20px;
+    box-shadow: none;
+    border-radius: 12px;
+  }
+
+  .auth-card h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .form-group input {
+    padding: 12px;
+    font-size: 16px; /* Avoid zoom on iOS */
+  }
+
+  .auth-card button {
+    padding: 14px;
+    font-size: 18px;
+  }
+}
+
 .error {
   background-color: #f8d7da;
   color: #721c24;

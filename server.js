@@ -24,6 +24,7 @@ app.use('/api/notifications', require('./src/routes/notifications'));
 app.use('/api/ussd', require('./src/routes/ussd'));
 app.use('/api/sync', require('./src/routes/sync'));
 app.use('/api/safaricom', require('./src/routes/safaricom'));
+app.use('/api/risk', require('./src/routes/risk'));
 
 // Health Check
 app.get('/api/health', (req, res) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { userAPI } from '../services/api';
+import api from '../services/api';
 import Navbar from '../components/Navbar';
 import './Wallet.css';
 
@@ -10,9 +11,11 @@ export default function Wallet() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     fetchProfile();
+    fetchTransactions();
   }, []);
 
   const fetchProfile = async () => {
@@ -23,6 +26,15 @@ export default function Wallet() {
       setError('Failed to fetch wallet balance');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await api.get('/transactions');
+      setTransactions(response.data || []);
+    } catch (err) {
+      console.error('Failed to fetch transactions:', err);
     }
   };
 
@@ -43,6 +55,9 @@ export default function Wallet() {
       setBalance(response.data.wallet_balance);
       setSuccess(`Ksh ${amount} added to your wallet!`);
       setAmount('');
+      
+      // Refresh transactions
+      fetchTransactions();
       
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -116,6 +131,28 @@ export default function Wallet() {
               {submitting ? 'Processing...' : 'Add Funds'}
             </button>
           </form>
+        </div>
+
+        {/* Transaction History */}
+        <div className="card">
+          <h2>Transaction History</h2>
+          {transactions.length === 0 ? (
+            <p className="no-transactions">No transactions yet</p>
+          ) : (
+            <div className="transactions-list">
+              {transactions.slice(0, 10).map((tx) => (
+                <div key={tx.id} className="transaction-item">
+                  <div className="tx-info">
+                    <p className="tx-description">{tx.description || tx.transaction_type}</p>
+                    <p className="tx-date">{new Date(tx.created_at).toLocaleString()}</p>
+                  </div>
+                  <div className={`tx-amount ${tx.transaction_type}`}>
+                    {tx.transaction_type === 'incoming' ? '+' : '-'}Ksh {parseFloat(tx.amount).toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Wallet Info */}

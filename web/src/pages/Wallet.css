@@ -235,6 +235,61 @@
   color: #667eea;
 }
 
+/* Transaction History */
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.tx-info {
+  flex: 1;
+}
+
+.tx-description {
+  margin: 0;
+  color: #1f2937;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.tx-date {
+  margin: 4px 0 0 0;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.tx-amount {
+  font-weight: 700;
+  font-size: 14px;
+  text-align: right;
+}
+
+.tx-amount.incoming {
+  color: #10b981;
+}
+
+.tx-amount.outgoing {
+  color: #ef4444;
+}
+
+.no-transactions {
+  text-align: center;
+  color: #9ca3af;
+  padding: 20px;
+  font-size: 14px;
+}
+
 @media (max-width: 768px) {
   .balance-card {
     padding: 30px 20px;

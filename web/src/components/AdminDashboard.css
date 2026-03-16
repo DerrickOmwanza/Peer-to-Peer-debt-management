@@ -398,6 +398,49 @@
   color: #6b7280;
 }
 
+@media (max-width: 1024px) {
+  .detail-panel {
+    width: 100%;
+    z-index: 1100;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 15px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 22px;
+  }
+
+  .stats-section {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .dispute-parties {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+}
+
 .info-row .value {
   font-size: 13px;
   color: #1f2937;

@@ -122,3 +122,37 @@
   font-size: 14px;
   color: #555;
 }
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 20px 15px;
+  }
+
+  .dashboard h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+  }
+
+  .wallet-balance {
+    font-size: 16px;
+  }
+
+  .loan-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .loan-header h3 {
+    font-size: 15px;
+  }
+
+  .status {
+    align-self: flex-start;
+  }
+}

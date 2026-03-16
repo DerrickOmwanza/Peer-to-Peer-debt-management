@@ -40,7 +40,7 @@ function validateAmount(amount) {
 async function getUserByPhone(phoneNumber) {
   try {
     const result = await db.query(
-      'SELECT id, phone, email, name, wallet_balance FROM users WHERE phone = $1',
+      'SELECT id, phone_number as phone, email, full_name as name, wallet_balance FROM users WHERE phone_number = $1',
       [phoneNumber]
     );
     return result.rows[0] || null;
@@ -59,8 +59,8 @@ async function getUserBorrowerLoans(userId) {
       SELECT 
         id, 
         lender_id,
-        amount, 
-        balance,
+        principal_amount as amount, 
+        remaining_balance as balance,
         repayment_amount,
         status,
         created_at
@@ -85,12 +85,12 @@ async function getUserLenderLoans(userId) {
       SELECT 
         l.id,
         l.borrower_id,
-        l.amount,
-        l.balance,
+        l.principal_amount as amount,
+        l.remaining_balance as balance,
         l.repayment_amount,
         l.status,
-        u.name as borrower_name,
-        u.phone as borrower_phone
+        u.full_name as borrower_name,
+        u.phone_number as borrower_phone
       FROM loans l
       JOIN users u ON l.borrower_id = u.id
       WHERE l.lender_id = $1
@@ -113,11 +113,11 @@ async function getPendingApprovals(userId) {
       SELECT 
         l.id,
         l.borrower_id,
-        l.amount,
+        l.principal_amount as amount,
         l.repayment_amount,
         l.status,
-        u.name as borrower_name,
-        u.phone as borrower_phone
+        u.full_name as borrower_name,
+        u.phone_number as borrower_phone
       FROM loans l
       JOIN users u ON l.borrower_id = u.id
       WHERE l.lender_id = $1 AND l.status = 'pending'
@@ -145,8 +145,8 @@ async function createLoanRequest(borrowerUserId, lenderPhone, amount, repaymentA
     // Create loan request
     const result = await db.query(`
       INSERT INTO loans 
-      (borrower_id, lender_id, amount, balance, repayment_amount, status, created_at)
-      VALUES ($1, $2, $3, $3, $4, 'pending', NOW())
+      (borrower_id, lender_id, principal_amount, remaining_balance, repayment_amount, status, created_at, terms_accepted, repayment_method, repayment_start_date)
+      VALUES ($1, $2, $3, $3, $4, 'pending', NOW(), true, 'fixed', CURRENT_DATE + INTERVAL '30 days')
       RETURNING *
     `, [borrowerUserId, lender.id, amount, repaymentAmount]);
 
@@ -155,10 +155,9 @@ async function createLoanRequest(borrowerUserId, lenderPhone, amount, repaymentA
     // Create notification for lender
     await db.query(`
       INSERT INTO notifications 
-      (user_id, type, title, message, read)
-      VALUES ($1, 'LOAN_REQUEST', 'Loan Request', 
-              'New loan request for Ksh ${amount}', false)
-    `, [lender.id]);
+      (id, user_id, notification_type, message, status)
+      VALUES ($1, $2, 'loan_request', 'New loan request for Ksh ${amount}', 'unread')
+    `, [require('uuid').v4(), lender.id]);
 
     return loan;
   } catch (error) {
@@ -204,21 +203,12 @@ async function approveLoan(loanId, lenderId) {
       throw new Error('Loan not found or unauthorized');
     }
 
-    // Get borrower info
-    const borrowerResult = await db.query(
-      'SELECT id FROM users WHERE id = $1',
-      [loan.borrower_id]
-    );
-
     // Notify borrower
-    if (borrowerResult.rows[0]) {
-      await db.query(`
-        INSERT INTO notifications 
-        (user_id, type, title, message, read)
-        VALUES ($1, 'LOAN_APPROVED', 'Loan Approved', 
-                'Your loan request for Ksh ${loan.amount} has been approved', false)
-      `, [loan.borrower_id]);
-    }
+    await db.query(`
+      INSERT INTO notifications 
+      (id, user_id, notification_type, message, status)
+      VALUES ($1, $2, 'approval', 'Your loan request for Ksh ${loan.amount} has been approved', 'unread')
+    `, [require('uuid').v4(), loan.borrower_id]);
 
     return loan;
   } catch (error) {
